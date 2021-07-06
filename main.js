@@ -1,82 +1,55 @@
+const addButton = document.querySelector('.add');
+let valorInput = document.querySelector('.input');
 const container = document.querySelector('.container');
-let inputValue = document.querySelector('.input');
-const add = document.querySelector('.add');
 
-if (window.localStorage.getItem('todos') == undefined) {
-    var todos = [];
-    window.localStorage.setItem('todos', JSON.stringify(todos));
-}
-
-let todosEX = window.localStorage.getItem('todos');
-var todos = JSON.parse(todosEX);
-
-class item {
-    constructor(name) {
-        this.createItem(name);
+class Item {
+    constructor(itemName) {
+        // Criando o item div
+        this.createDiv(itemName);
     }
 
-    createItem(name) {
+    createDiv() {
+        let input = document.createElement('input');
+        input.value = itemName;
+        input.disabled = true;
+        input.classList.add('item_input');
+        input.type = 'text';
+
         let itemBox = document.createElement('div');
         itemBox.classList.add('item');
 
-        let input = document.createElement('input');
-        input.type = 'text';
-        input.disabled = true;
-        input.value = name;
-        input.classList.add('item_input');
+        let editButton = document.createElement('button');
+        editButton.innerHTML = 'EDIT';
+        editButton.classList.add('edit');
 
-        let edit = document.createElement('button');
-        edit.classList.add('edit');
-        edit.innerHTML = 'EDIT';
-        edit.addEventListener('click', () => this.edit(input, name));
-
-        let remove = document.createElement('button');
-        remove.classList.add('remove');
-        remove.innerHTML = 'REMOVE';
-        remove.addEventListener('click', () => this.remove(itemBox, name));
+        let removeButton = document.createElement('button');
+        removeButton.innerHTML = 'REMOVE';
+        removeButton.classList.add('remove');
 
         container.appendChild(itemBox);
 
         itemBox.appendChild(input);
-        itemBox.appendChild(edit);
-        itemBox.appendChild(remove);
+        itemBox.appendChild(editButton);
+        itemBox.appendChild(removeButton);
+
+        editButton.addEventListener('click', () => this.edit(input));
+
+        removeButton.addEventListener('click', () => this.remove(itemBox));
     }
 
-    edit(input, name) {
-        if (input.disabled == true) {
-            input.disabled = !input.disabled;
-        } else {
-            input.disabled = !input.disabled;
-            let indexof = todos.indexOf(name);
-            todos[indexof] = input.value;
-            window.localStorage.setItem('todos', JSON.stringify(todos));
-        }
+    edit(input) {
+        input.disabled = !input.disabled;
     }
 
-    remove(itemBox, name) {
-        itemBox.parentNode.removeChild(itemBox);
-        let index = todos.indexOf(name);
-        todos.splice(index, 1);
-        window.localStorage.setItem('todos', JSON.stringify(todos));
+    remove(item) {
+        container.removeChild(item);
     }
 }
-
-add.addEventListener('click', check);
-window.addEventListener('keydown', (e) => {
-    if (e.which == 13) {
-        check();
-    }
-});
 
 function check() {
-    if (inputValue.value != '') {
-        new item(inputValue.value);
-        todos.push(inputValue.value);
-        window.localStorage.setItem('todos', JSON.stringify(todos));
-        inputValue.value = '';
+    if (valorInput.value !== '') {
+        const item = new Item(valorInput);
     }
 }
 
-for (let v = 0; v < todos.length; v++) {
-    new item(todos[v]);
-}
+addButton.addEventListener('click', check);
